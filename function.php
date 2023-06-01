@@ -19,5 +19,3 @@
 	}
 	return  $hasil_tanggal;
 	}
-	
-	?>

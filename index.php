@@ -5,10 +5,13 @@ session_start();
 
 $koneksi = new mysqli("localhost", "root", "", "inventori");
 
-if (empty($_SESSION['admin'])) {
+if (empty($_SESSION['data']['level'])) {
 
   header("location:login.php");
 }
+
+$data = $_SESSION['data'];
+$page = $_GET['page'];
 ?>
 
 <!DOCTYPE html>
@@ -35,6 +38,11 @@ if (empty($_SESSION['admin'])) {
   <!-- Custom styles for this page -->
   <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <!-- SELECT2 -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 
 </head>
 
@@ -57,15 +65,6 @@ if (empty($_SESSION['admin'])) {
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
 
-
-      <?php
-      if ($_SESSION['admin']) {
-        $user = $_SESSION['admin'];
-      }
-      $sql = $koneksi->query("select * from users where id='$user'");
-      $data = $sql->fetch_assoc();
-      ?>
-
       <!--sidebar start-->
 
       <li class="d-flex align-items-center justify-content-center">
@@ -83,7 +82,7 @@ if (empty($_SESSION['admin'])) {
       </li>
 
       <!-- Nav Item - Dashboard -->
-      <li class="nav-item active">
+      <li class="nav-item  <?= ($page == 'home' || !isset($page)) ? 'active' : ''; ?>">
         <a class="nav-link" href="?page=home">
           <i class="fas fa-fw fa-home"></i>
           <span>Dashboard</span></a>
@@ -100,25 +99,29 @@ if (empty($_SESSION['admin'])) {
       <!-- Nav Item - Pages Collapse Menu -->
 
 
-      <li class="nav-item active">
+      <li class="nav-item <?= ($page == 'pengguna') ? 'active' : ''; ?>">
         <a class="nav-link" href="?page=pengguna">
           <i class="fas fa-fw fa-home"></i>
           <span>Data Pengguna</span></a>
       </li>
 
+      <?php
+      $data_master = in_array($_GET['page'], ['gudang', 'jenisbarang', 'satuanbarang', 'supplier', 'barangrusak']);
+      ?>
 
-      <li class="nav-item active">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseData" aria-expanded="true" aria-controls="collapseData">
+      <li class="nav-item <?= ($data_master) ? 'active' : ''; ?>">
+        <a class="nav-link <?= ($data_master) ? '' : 'collapsed'; ?>" href="#" data-toggle="collapse" data-target="#collapseData" aria-expanded="true" aria-controls="collapseData">
           <i class="fas fa-fw fa-folder"></i>
           <span>Data Master</span>
         </a>
-        <div id="collapseData" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+        <div id="collapseData" class="collapse <?= ($data_master) ? 'show' : ''; ?>" aria-labelledby="headingPages" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Menu:</h6>
-            <a class="collapse-item" href="?page=gudang">Data Barang</a>
-            <a class="collapse-item" href="?page=jenisbarang">Jenis Barang</a>
-            <a class="collapse-item" href="?page=satuanbarang">Satuan Barang</a>
-            <a class="collapse-item" href="?page=supplier">Data Supplier</a>
+            <a class="collapse-item <?= ($page == 'gudang') ? 'active' : ''; ?>" href="?page=gudang">Data Barang</a>
+            <a class="collapse-item <?= ($page == 'jenisbarang') ? 'active' : ''; ?>" href="?page=jenisbarang">Jenis Barang</a>
+            <a class="collapse-item <?= ($page == 'satuanbarang') ? 'active' : ''; ?>" href="?page=satuanbarang">Satuan Barang</a>
+            <a class="collapse-item <?= ($page == 'supplier') ? 'active' : ''; ?>" href="?page=supplier">Data Supplier</a>
+            <a class="collapse-item <?= ($page == 'barangrusak') ? 'active' : ''; ?>" href="?page=barangrusak">Barang Rusak</a>
 
           </div>
         </div>
@@ -126,7 +129,7 @@ if (empty($_SESSION['admin'])) {
 
 
 
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
           <i class="fas fa-fw fa-folder"></i>
           <span>Transaksi</span>
@@ -151,7 +154,7 @@ if (empty($_SESSION['admin'])) {
 
 
 
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporan" aria-expanded="true" aria-controls="collapseLaporan">
           <i class="fas fa-fw fa-folder"></i>
           <span>Laporan</span>
@@ -222,7 +225,6 @@ if (empty($_SESSION['admin'])) {
         <div class="container-fluid">
           <section class="content">
             <?php
-            $page = $_GET['page'];
             $aksi = $_GET['aksi'];
 
             if ($page == "pengguna") {
@@ -255,14 +257,14 @@ if (empty($_SESSION['admin'])) {
                 include "page/jenisbarang/jenisbarang.php";
               }
               if ($aksi == "tambahjenis") {
-                include "page//jenisbarang/tambahjenis.php";
+                include "page/jenisbarang/tambahjenis.php";
               }
-              if ($aksi == "ubahsupplier") {
-                include "page/supplier/ubahsupplier.php";
+              if ($aksi == "ubahjenis") {
+                include "page/jenisbarang/ubahjenis.php";
               }
 
-              if ($aksi == "hapussupplier") {
-                include "page/supplier/hapussupplier.php";
+              if ($aksi == "hapusjenis") {
+                include "page/jenisbarang/hapusjenis.php";
               }
             }
 
@@ -359,6 +361,21 @@ if (empty($_SESSION['admin'])) {
             }
 
 
+            if ($page == "barangrusak") {
+              if ($aksi == "") {
+                include "page/barangrusak/barangrusak.php";
+              }
+              if ($aksi == "tambahbarangrusak") {
+                include "page/barangrusak/tambahbarangrusak.php";
+              }
+              if ($aksi == "ubahbarangrusak") {
+                include "page/barangrusak/ubahbarangrusak.php";
+              }
+              if ($aksi == "hapusbarangrusak") {
+                include "page/barangrusak/hapusbarangrusak.php";
+              }
+            }
+
 
             if ($page == "") {
               include "home.php";
@@ -400,7 +417,6 @@ if (empty($_SESSION['admin'])) {
   <!-- Logout Modal-->
 
   <!-- Bootstrap core JavaScript-->
-  <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
   <!-- Core plugin JavaScript-->
@@ -487,7 +503,6 @@ if (empty($_SESSION['admin'])) {
             success: function(data) {
               $(".tampung2").html(data);
               $('.table').DataTable();
-
             }
           });
 
@@ -499,10 +514,11 @@ if (empty($_SESSION['admin'])) {
   </script>
 
 
-
-
-
-
+  <script>
+    $(document).ready(function() {
+      $('.select2-on').select2();
+    });
+  </script>
 </body>
 
 </html>

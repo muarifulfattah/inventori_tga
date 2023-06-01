@@ -5,11 +5,13 @@ session_start();
 
 $koneksi = new mysqli("localhost", "root", "", "inventori");
 
-if (empty($_SESSION['petugas'])) {
+if (empty($_SESSION['data']['level'])) {
 
   header("location:login.php");
 }
+$data = $_SESSION['data'];
 
+$page = $_GET['page'];
 ?>
 
 <!DOCTYPE html>
@@ -35,6 +37,11 @@ if (empty($_SESSION['petugas'])) {
 
   <!-- Custom styles for this page -->
   <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+
+  <!-- SELECT2 -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 
 </head>
@@ -59,16 +66,6 @@ if (empty($_SESSION['petugas'])) {
       <hr class="sidebar-divider my-0">
 
 
-      <?php
-      if ($_SESSION['petugas']) {
-        $user = $_SESSION['petugas'];
-      }
-      $sql = $koneksi->query("select * from users where id='$user'");
-      $data = $sql->fetch_assoc();
-      ?>
-
-
-
       <!--sidebar start-->
 
       <li class="d-flex align-items-center justify-content-center">
@@ -86,10 +83,8 @@ if (empty($_SESSION['petugas'])) {
       </li>
 
 
-
-
       <!-- Nav Item - Dashboard -->
-      <li class="nav-item active">
+      <li class="nav-item <?= ($page == 'home2' || !isset($page)) ? 'active' : ''; ?>">
         <a class="nav-link" href="?page=home2">
           <i class="fas fa-fw fa-home"></i>
           <span>Dashboard</span></a>
@@ -106,20 +101,23 @@ if (empty($_SESSION['petugas'])) {
       <!-- Nav Item - Pages Collapse Menu -->
 
 
+      <?php
+      $data_master = in_array($page, ['gudang', 'jenisbarang', 'satuanbarang', 'supplier', 'barangrusak']);
+      ?>
 
-
-      <li class="nav-item active">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseData" aria-expanded="true" aria-controls="collapseData">
+      <li class="nav-item <?= ($data_master) ? 'active' : ''; ?>">
+        <a class="nav-link <?= ($data_master) ? '' : 'collapsed'; ?>" href="#" data-toggle="collapse" data-target="#collapseData" aria-expanded="true" aria-controls="collapseData">
           <i class="fas fa-fw fa-folder"></i>
           <span>Data Master</span>
         </a>
-        <div id="collapseData" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+        <div id="collapseData" class="collapse <?= ($data_master) ? 'show' : ''; ?>" aria-labelledby="headingPages" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Menu:</h6>
-            <a class="collapse-item" href="?page=gudang">Data Barang</a>
-            <a class="collapse-item" href="?page=jenisbarang">Jenis Barang</a>
-            <a class="collapse-item" href="?page=satuanbarang">Satuan Barang</a>
-            <a class="collapse-item" href="?page=supplier">Data Supplier</a>
+            <a class="collapse-item <?= ($page == 'gudang') ? 'active' : ''; ?>" href="?page=gudang">Data Barang</a>
+            <a class="collapse-item <?= ($page == 'jenisbarang') ? 'active' : ''; ?>" href="?page=jenisbarang">Jenis Barang</a>
+            <a class="collapse-item <?= ($page == 'satuanbarang') ? 'active' : ''; ?>" href="?page=satuanbarang">Satuan Barang</a>
+            <a class="collapse-item <?= ($page == 'supplier') ? 'active' : ''; ?>" href="?page=supplier">Data Supplier</a>
+            <a class="collapse-item <?= ($page == 'barangrusak') ? 'active' : ''; ?>" href="?page=barangrusak">Barang Rusak</a>
 
           </div>
         </div>
@@ -127,7 +125,7 @@ if (empty($_SESSION['petugas'])) {
 
 
 
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
           <i class="fas fa-fw fa-folder"></i>
           <span>Transaksi</span>
@@ -137,7 +135,7 @@ if (empty($_SESSION['petugas'])) {
             <h6 class="collapse-header">Menu:</h6>
             <a class="collapse-item" href="?page=barangmasuk">Barang Masuk</a>
             <a class="collapse-item" href="?page=barangkeluar">Barang Keluar</a>
-
+            <a class="collapse-item" href="?page=barangrusak">Barang Rusak</a>
 
           </div>
         </div>
@@ -204,13 +202,7 @@ if (empty($_SESSION['petugas'])) {
 
 
             <?php
-            $page = $_GET['page'];
             $aksi = $_GET['aksi'];
-
-
-
-
-
             if ($page == "supplier") {
               if ($aksi == "") {
                 include "page/supplier/supplier.php";
@@ -233,14 +225,14 @@ if (empty($_SESSION['petugas'])) {
                 include "page/jenisbarang/jenisbarang.php";
               }
               if ($aksi == "tambahjenis") {
-                include "page//jenisbarang/tambahjenis.php";
+                include "page/jenisbarang/tambahjenis.php";
               }
-              if ($aksi == "ubahsupplier") {
-                include "page/supplier/ubahsupplier.php";
+              if ($aksi == "ubahjenis") {
+                include "page/jenisbarang/ubahjenis.php";
               }
 
-              if ($aksi == "hapussupplier") {
-                include "page/supplier/hapussupplier.php";
+              if ($aksi == "hapusjenis") {
+                include "page/jenisbarang/hapusjenis.php";
               }
             }
 
@@ -314,7 +306,20 @@ if (empty($_SESSION['petugas'])) {
             }
 
 
-
+            if ($page == "barangrusak") {
+              if ($aksi == "") {
+                include "page/barangrusak/barangrusak.php";
+              }
+              if ($aksi == "tambahbarangrusak") {
+                include "page/barangrusak/tambahbarangrusak.php";
+              }
+              if ($aksi == "ubahbarangrusak") {
+                include "page/barangrusak/ubahbarangrusak.php";
+              }
+              if ($aksi == "hapusbarangrusak") {
+                include "page/barangrusak/hapusbarangrusak.php";
+              }
+            }
 
 
             if ($page == "") {
@@ -394,11 +399,11 @@ if (empty($_SESSION['petugas'])) {
 
 
 
-
-
-
-
-
+  <script>
+    $(document).ready(function() {
+      $('.select2-on').select2();
+    });
+  </script>
 
 </body>
 

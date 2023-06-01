@@ -106,7 +106,7 @@ $level = $tampil['level'];
 						$password = $_POST['password'];
 						$level = $_POST['level'];
 
-						$foto = $_FILES['foto']['name'] . strtotime(date('d-m-Y'));
+						$foto = strtotime(date('d-m-Y')) . '-' . $_FILES['foto']['name'];
 						$lokasi = $_FILES['foto']['tmp_name'];
 
 						if (!empty($lokasi)) {

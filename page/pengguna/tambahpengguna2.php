@@ -82,7 +82,7 @@
 							$password = md5($_POST['password']);
 							$level = $_POST['level'];
 
-							$foto = $_FILES['foto']['name'] . strtotime(date('d-m-Y'));
+							$foto = strtotime(date('d-m-Y')) . '-' . $_FILES['foto']['name'];
 							$lokasi = $_FILES['foto']['tmp_name'];
 							$upload = move_uploaded_file($lokasi, "img/" . $foto);
 

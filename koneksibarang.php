@@ -1,11 +1,2 @@
 <?php
-
-	
-	
-	
-	$koneksi = new mysqli("localhost","root","","inventori");
-
-	
-	
-	
-	?>	
+$koneksi = new mysqli("localhost", "root", "", "inventori");
