@@ -111,14 +111,9 @@ $level = $tampil['level'];
 
 						if (!empty($lokasi)) {
 							$upload = move_uploaded_file($lokasi, "img/" . $foto);
-
-
-
 							$sql = $koneksi->query("update users set nik='$nik', nama='$nama', telepon='$telepon', username='$username', level='$level', foto='$foto' where id='$id'");
-
 							if ($sql) {
 					?>
-
 								<script type="text/javascript">
 									alert("Data Berhasil Diubah");
 									window.location.href = "?page=pengguna";
