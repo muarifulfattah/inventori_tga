@@ -97,17 +97,19 @@ if ($login) {
 	if ($ketemu >= 1) {
 		if ($password == $data['password']) {
 			session_start();
+			$_SESSION['data'] = $data;
+			header("location:index.php");
 
-			if ($data['level'] == 'superadmin') {
-				$_SESSION['data'] = $data;
-				header("location:index3.php");
-			} else if ($data['level'] == 'admin') {
-				$_SESSION['data'] = $data;
-				header("location:index.php");
-			} else if ($data['level'] == 'petugas') {
-				$_SESSION['data'] = $data;
-				header("location:index2.php");
-			}
+			// if ($data['level'] == 'superadmin') {
+			// 	$_SESSION['data'] = $data;
+			// 	header("location:index3.php");
+			// } else if ($data['level'] == 'admin') {
+			// 	$_SESSION['data'] = $data;
+			// 	header("location:index.php");
+			// } else if ($data['level'] == 'petugas') {
+			// 	$_SESSION['data'] = $data;
+			// 	header("location:index2.php");
+			// }
 		} else {
 			echo '<center><div class="alert alert-danger">Upss...!!! Login gagal. Silakan Coba Kembali</div></center>';
 		}

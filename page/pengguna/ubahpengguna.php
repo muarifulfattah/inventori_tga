@@ -1,6 +1,6 @@
 <?php
 $id = $_GET['id'];
-$sql2 = $koneksi->query("select * from users where id = '$id'");
+$sql2 = $koneksi->query("SELECT * FROM users WHERE id = '$id'");
 $tampil = $sql2->fetch_assoc();
 
 $level = $tampil['level'];
@@ -16,16 +16,12 @@ $level = $tampil['level'];
 		</div>
 		<div class="card-body">
 			<div class="table-responsive">
-
-
 				<div class="body">
-
 					<form method="POST" enctype="multipart/form-data">
-
 						<label for="">NIK</label>
 						<div class="form-group">
 							<div class="form-line">
-								<input type="number" name="nik" value="<?php echo $tampil['nik']; ?>" class="form-control" required />
+								<input type="number" name="nik" value="<?= $tampil['nik']; ?>" class="form-control" required />
 
 							</div>
 						</div>
@@ -33,7 +29,7 @@ $level = $tampil['level'];
 						<label for="">Nama</label>
 						<div class="form-group">
 							<div class="form-line">
-								<input type="text" name="nama" value="<?php echo $tampil['nama']; ?>" class="form-control" required />
+								<input type="text" name="nama" value="<?= $tampil['nama']; ?>" class="form-control" required />
 
 							</div>
 						</div>
@@ -41,7 +37,7 @@ $level = $tampil['level'];
 						<label for="">Telepon</label>
 						<div class="form-group">
 							<div class="form-line">
-								<input type="number" name="telepon" value="<?php echo $tampil['telepon']; ?>" class="form-control" required />
+								<input type="number" name="telepon" value="<?= $tampil['telepon']; ?>" class="form-control" required />
 
 							</div>
 						</div>
@@ -49,7 +45,7 @@ $level = $tampil['level'];
 						<label for="">Username</label>
 						<div class="form-group">
 							<div class="form-line">
-								<input type="text" name="username" value="<?php echo $tampil['username']; ?>" class="form-control" required />
+								<input type="text" name="username" value="<?= $tampil['username']; ?>" class="form-control" required />
 
 							</div>
 						</div>
@@ -57,7 +53,7 @@ $level = $tampil['level'];
 						<label for="">Password</label>
 						<div class="form-group">
 							<div class="form-line">
-								<input type="text" name="password" value="" placeholder="Masukkan password baru!" class="form-control" required />
+								<input type="text" name="password" value="" placeholder="Masukkan password baru!" class="form-control" />
 
 							</div>
 						</div>
@@ -67,11 +63,14 @@ $level = $tampil['level'];
 						<div class="form-group">
 							<div class="form-line">
 								<select name="level" class="form-control show-tick" required>
-									<option value="">-- Pilih Level --</option>
-									<option value="superadmin">Super Admin</option>
-									<option value="admin">Admin</option>
-									<option value="petugas">Petugas</option>
-
+									<?php $role = ['admin', 'petugas_penjualan', 'petugas_gudang']; ?>
+									<?php foreach ($role as $akses) : ?>
+										<?php if ($akses == $level) : ?>
+											<option value="<?= $akses; ?>" selected><?= ucwords(str_replace('_', ' ', $akses)); ?></option>
+										<?php else : ?>
+											<option value="<?= $akses; ?>"><?= ucwords(str_replace('_', ' ', $akses)); ?></option>
+										<?php endif; ?>
+									<?php endforeach; ?>
 								</select>
 							</div>
 						</div>
@@ -80,8 +79,8 @@ $level = $tampil['level'];
 						<label for="">Foto</label>
 						<div class="form-group">
 							<div class="form-line">
-								<img src="img/<?php echo $tampil['foto']; ?> " width="50" height="50" alt="">
-
+								<img src="img/<?= $tampil['foto']; ?> " width="50" height="50" alt="">
+								<input type="hidden" name="old_image" value="<?= $tampil['foto']; ?>">
 							</div>
 						</div>
 
@@ -89,8 +88,7 @@ $level = $tampil['level'];
 						<label for="">Ganti Foto</label>
 						<div class="form-group">
 							<div class="form-line">
-								<input type="file" name="foto" class="form-control" required />
-
+								<input type="file" name="image" class="form-control" />
 							</div>
 						</div>
 
@@ -103,15 +101,23 @@ $level = $tampil['level'];
 						$nama = $_POST['nama'];
 						$telepon = $_POST['telepon'];
 						$username = $_POST['username'];
-						$password = $_POST['password'];
+						$password = md5($_POST['password']);
 						$level = $_POST['level'];
 
-						$foto = strtotime(date('d-m-Y')) . '-' . $_FILES['foto']['name'];
-						$lokasi = $_FILES['foto']['tmp_name'];
+						$image = strtotime(date('d-m-Y')) . '-' . $_FILES['image']['name'];
+						$lokasi = $_FILES['image']['tmp_name'];
+
+						if (!file_exists($_FILES['image']['tmp_name']) || !is_uploaded_file($_FILES['image']['tmp_name'])) {
+							$image = $_POST['old_image'];
+						}
 
 						if (!empty($lokasi)) {
 							$upload = move_uploaded_file($lokasi, "img/" . $foto);
-							$sql = $koneksi->query("update users set nik='$nik', nama='$nama', telepon='$telepon', username='$username', level='$level', foto='$foto' where id='$id'");
+							if (!empty($_POST['password'])) {
+								$sql = $koneksi->query("UPDATE users SET nik='$nik', nama='$nama', telepon='$telepon', username='$username', password='$password', level='$level', foto='$foto' WHERE id='$id'");
+							} else {
+								$sql = $koneksi->query("UPDATE users SET nik='$nik', nama='$nama', telepon='$telepon', username='$username', level='$level', foto='$foto' WHERE id='$id'");
+							}
 							if ($sql) {
 					?>
 								<script type="text/javascript">
