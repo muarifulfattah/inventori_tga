@@ -429,7 +429,7 @@ $page = $_GET['page'];
   <!-- Logout Modal-->
 
   <!-- Bootstrap core JavaScript-->
-  <script src="vendor/jquery/jquery.min.js"></script>
+  <!-- <script src="vendor/jquery/jquery.min.js"></script> -->
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
   <!-- Core plugin JavaScript-->
@@ -449,16 +449,14 @@ $page = $_GET['page'];
   <script>
     jQuery(document).ready(function($) {
       $('#cmb_barang').change(function() {
-        var tamp = $(this).val();
+        var id_barang = $(this).val();
         $.ajax({
           type: 'POST', // Metode pengiriman data menggunakan POST
           url: 'page/barangmasuk/get_barang.php', // File yang akan memproses data
-          data: 'tamp=' + tamp, // Data yang akan dikirim ke file pemroses
+          data: 'id_barang=' + id_barang, // Data yang akan dikirim ke file pemroses
           success: function(data) { // Jika berhasil
             $('.tampung').html(data);
           }
-
-
         });
       });
     });
@@ -467,16 +465,14 @@ $page = $_GET['page'];
   <script>
     jQuery(document).ready(function($) {
       $('#cmb_barang').change(function() {
-        var tamp = $(this).val();
+        var id_barang = $(this).val();
         $.ajax({
           type: 'POST', // Metode pengiriman data menggunakan POST
           url: 'page/barangmasuk/get_satuan.php', // File yang akan memproses data
-          data: 'tamp=' + tamp, // Data yang akan dikirim ke file pemroses
+          data: 'id_barang=' + id_barang, // Data yang akan dikirim ke file pemroses
           success: function(data) { // Jika berhasil
             $('.tampung1').html(data);
           }
-
-
         });
       });
     });
