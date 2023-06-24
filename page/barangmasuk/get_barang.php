@@ -10,7 +10,10 @@ if (mysqli_num_rows($result) > 0) {
   while ($row = mysqli_fetch_assoc($result)) {
 
 ?>
-    <div class="form-label">Jumlah Stok Gudang : <span id="stok"><?= $row['jumlah']; ?></span></div>
+    <div class="rounded img-thumbnail mt-2" style="display: inline-block;">
+      <img src="img/<?= $row['image']; ?>" alt="Gambar" width="75" height="75">
+    </div>
+    <span class="form-label">Jumlah Stok Gudang : <span id="stok"><?= $row['jumlah']; ?></span></span>
 <?php
   }
 } else {

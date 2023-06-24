@@ -445,38 +445,6 @@ $page = $_GET['page'];
   <!-- Page level custom scripts -->
   <script src="js/demo/datatables-demo.js"></script>
 
-  <!--script for this page-->
-  <script>
-    jQuery(document).ready(function($) {
-      $('#cmb_barang').change(function() {
-        var id_barang = $(this).val();
-        $.ajax({
-          type: 'POST', // Metode pengiriman data menggunakan POST
-          url: 'page/barangmasuk/get_barang.php', // File yang akan memproses data
-          data: 'id_barang=' + id_barang, // Data yang akan dikirim ke file pemroses
-          success: function(data) { // Jika berhasil
-            $('.tampung').html(data);
-          }
-        });
-      });
-    });
-  </script>
-
-  <script>
-    jQuery(document).ready(function($) {
-      $('#cmb_barang').change(function() {
-        var id_barang = $(this).val();
-        $.ajax({
-          type: 'POST', // Metode pengiriman data menggunakan POST
-          url: 'page/barangmasuk/get_satuan.php', // File yang akan memproses data
-          data: 'id_barang=' + id_barang, // Data yang akan dikirim ke file pemroses
-          success: function(data) { // Jika berhasil
-            $('.tampung1').html(data);
-          }
-        });
-      });
-    });
-  </script>
 
   <script type="text/javascript">
     jQuery(document).ready(function($) {
@@ -489,7 +457,6 @@ $page = $_GET['page'];
             success: function(data) {
               $(".tampung1").html(data);
               $('.table').DataTable();
-
             }
           });
 

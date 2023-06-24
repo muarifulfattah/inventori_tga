@@ -8,7 +8,7 @@
         </div>
         <div class="card-body">
             <div class="mb-3">
-                <a href="?page=barangrusak&aksi=tambahbarangrusak" class="btn btn-primary">Tambah</a>
+                <a href="?page=barangrusak&aksi=tambahbarangrusak" class="btn btn-primary">Tambah Barang Rusak</a>
             </div>
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -16,6 +16,7 @@
                         <tr>
                             <th>No</th>
                             <th>Gambar</th>
+                            <th>ID Barang Rusak</th>
                             <th>Tanggal Rusak</th>
                             <th>Kode Barang</th>
                             <th>Nama Barang</th>
@@ -34,6 +35,7 @@
                             <tr>
                                 <td><?= $no++; ?></td>
                                 <td><img src="img/<?= $data['image'] ?>" alt="Gambar Barang" width="75" height="75"></td>
+                                <td><?= $data['id'] ?></td>
                                 <td><?= $data['tgl_rusak'] ?></td>
                                 <td><?= $data['id_barang'] ?></td>
                                 <td><?= $data['nama_barang'] ?></td>

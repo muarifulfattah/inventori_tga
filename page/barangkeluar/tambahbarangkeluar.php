@@ -1,185 +1,171 @@
-  
-   <script>
- function sum() {
-	 var stok = document.getElementById('stok').value;
-	 var jumlahkeluar = document.getElementById('jumlahkeluar').value;
-	 var result = parseInt(stok) - parseInt(jumlahkeluar);
-	 if (!isNaN(result)) {
-		 document.getElementById('total').value = result;
-	 }
- }
- </script>
-  
-  <?php 
-  
-  
-$koneksi = new mysqli("localhost","root","","inventori");
-$no = mysqli_query($koneksi, "select id_transaksi from barang_keluar order by id_transaksi desc");
-$idtran = mysqli_fetch_array($no);
-$kode = $idtran['id_transaksi'];
+  <script>
+  	function sum() {
+  		var check = document.getElementById('stok');
+  		if (check) {
+  			var stok = check.innerHTML;
+  		}
+  		var jumlah = document.getElementById('jumlah');
+  		if (jumlah.value == '') {
+  			jumlah.value = 0;
+  		}
+  		var result = parseInt(stok) - parseInt(jumlah.value);
+  		if (!isNaN(result)) {
+  			if (result < 0) {
+  				document.getElementById('jumlah_stok').value = 0;
+  				jumlah.classList.add('is-invalid');
+  			} else {
+  				document.getElementById('jumlah_stok').value = result;
+  				jumlah.classList.remove('is-invalid');
+  			}
+  		}
+  	}
+  </script>
+
+  <?php
+	$koneksi = new mysqli("localhost", "root", "", "inventori");
+	$no = mysqli_query($koneksi, "SELECT id_barang_keluar FROM barang_keluar ORDER BY id_barang_keluar DESC");
+	$idtran = mysqli_fetch_array($no);
+	$kode = $idtran['id_barang_keluar'];
 
 
-$urut = substr($kode, 8, 3);
-$tambah = (int) $urut + 1;
-$bulan = date("m");
-$tahun = date("y");
-
-if(strlen($tambah) == 1){
-	$format = "TRK-".$bulan.$tahun."00".$tambah;
-} else if(strlen($tambah) == 2){
-	$format = "TRK-".$bulan.$tahun."0".$tambah;
-	
-} else{
-	$format = "TRK-".$bulan.$tahun.$tambah;
-
-}
-
-  
-
-$tanggal_keluar = date("Y-m-d");
+	$urut = substr($kode, 8, 3);
+	$tambah = (int) $urut + 1;
+	$bulan = date("m");
+	$tahun = date("y");
 
 
-?>
-  
+	$urut = substr($kode, 8);
+	$tambah = (int) $urut + 1;
+	$bulan = date("m");
+	$tahun = date("y");
+
+
+	$format = "KLR-" . $bulan . $tahun .  sprintf('%04d', $tambah);
+	$tanggal_masuk = date("Y-m-d");
+
+	?>
+
   <div class="container-fluid">
 
-          <!-- DataTales Example -->
-          <div class="card shadow mb-4">
-            <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Tambah Barang Keluar</h6>
-            </div>
-            <div class="card-body">
-              <div class="table-responsive">
-							
-							
-							<div class="body">
-							
-							<form method="POST" enctype="multipart/form-data">
-							
-							<label for="">Id Transaksi</label>
-                            <div class="form-group">
-                               <div class="form-line">
-                                <input type="text" name="id_transaksi" class="form-control" id="id_transaksi" value="<?php echo $format; ?>" readonly />  
-							</div>
-                            </div>
-							
-						
-							
-							<label for="">Tanggal Keluar</label>
-                            <div class="form-group">
-                               <div class="form-line">
-                                 <input type="date" name="tanggal_keluar" class="form-control" id="tanggal_kelauar" value="<?php echo $tanggal_keluar; ?>" />
-							</div>
-                            </div>
-							
-					
-							<label for="">Barang</label>
-                            <div class="form-group">
-                               <div class="form-line">
-                                <select name="barang" id="cmb_barang" class="form-control" />
-								<option value="">-- Pilih Barang  --</option>
-								<?php
-								
-								$sql = $koneksi -> query("select * from gudang order by kode_barang");
-								while ($data=$sql->fetch_assoc()) {
-									echo "<option value='$data[kode_barang].$data[nama_barang]'>$data[kode_barang] | $data[nama_barang]</option>";
-								}
-								?>
-								
-								</select>
-                                     
-									 
-							</div>
-                            </div>
-							<div class="tampung"></div>
-					
-							<label for="">Jumlah</label>
-                            <div class="form-group">
-                               <div class="form-line">
-                                <input type="text" name="jumlahkeluar" id="jumlahkeluar" onkeyup="sum()" class="form-control" />
-							
-                                     
-									 
-							</div>
-                            </div>
-							
-							<label for="total">Total Stok</label>
-                            <div class="form-group">
-                               <div class="form-line">
-                               <input readonly="readonly" name="total" id="total" type="number" class="form-control">
-                            
+  	<!-- DataTales Example -->
+  	<div class="card shadow mb-4">
+  		<div class="card-header py-3">
+  			<h6 class="m-0 font-weight-bold text-primary">Tambah Barang Keluar</h6>
+  		</div>
+  		<div class="card-body">
+  			<div class="table-responsive">
+  				<div class="body">
+  					<form method="POST" enctype="multipart/form-data">
+  						<label for="id_barang_keluar">Id Transaksi</label>
+  						<div class="form-group">
+  							<div class="form-line">
+  								<input type="text" class="form-control" name="id_barang_keluar" id="id_barang_keluar" value="<?= $format; ?>" readonly />
+  							</div>
+  						</div>
 
-							</div>
-                            </div>
-							
-							<div class="tampung1"></div>
-							
-							<label for="">Tujuan</label>
-                            <div class="form-group">
-                               <div class="form-line">
-                                <input type="text" name="tujuan" class="form-control" />	 
-							</div>
-                            </div>
-						
-						
-							
-							<input type="submit" name="simpan" value="Simpan" class="btn btn-primary">
-							
-							</form>
-							
-							
-							
-							<?php
-							
-								if (isset($_POST['simpan'])) {
-								$id_transaksi= $_POST['id_transaksi'];
-								$tanggal= $_POST['tanggal_keluar'];
+  						<label for="tanggal_transaksi">Tanggal Transaksi</label>
+  						<div class="form-group">
+  							<div class="form-line">
+  								<input type="datetime-local" name="tanggal_transaksi" class="form-control" id="tanggal_transaksi" value="<?= date('Y-m-d H:i:s'); ?>" required />
+  							</div>
+  						</div>
 
-								$barang= $_POST['barang'];
-								$pecah_barang = explode(".", $barang);
-								$kode_barang = $pecah_barang[0];
-								$nama_barang = $pecah_barang[1];
-								$jumlah= $_POST['jumlahkeluar'];
-								
-								$satuan= $_POST['satuan'];
-								$tujuan= $_POST['tujuan'];
-								
-								
-								$total= $_POST['total'];
-								$sisa2 = $total;
-								if ($sisa2 < 0) {
+  						<label for="">Barang</label>
+  						<div class="form-group">
+  							<div class="form-line">
+  								<select name="barang" id="cmb_barang" class="form-control select2-on" />
+  								<option value="">--- Pilih Barang ---</option>
+  								<?php
+									$sql = $koneksi->query("SELECT * FROM gudang ORDER BY id_barang");
+									while ($data = $sql->fetch_assoc()) {
+										echo "<option value='$data[id_barang]'>$data[id_barang] | $data[nama_barang]</option>";
+									}
 									?>
-									
-										<script type="text/javascript">
-										alert("Stok Barang Habis, Transaksi Tidak Dapat Dilakukan");
-										window.location.href="?page=barangkeluar&aksi=tambahbarangkeluar";
-										</script>
-										
-											<?php
-								}else {
-							
-								
-								$sql = $koneksi->query("insert into barang_keluar (id_transaksi, tanggal, kode_barang, nama_barang, jumlah, total, satuan, tujuan) values('$id_transaksi','$tanggal','$kode_barang','$nama_barang','$jumlah','$total','$satuan','$tujuan')");
-								$sql2 = $koneksi-> query("update gudang set jumlah=(jumlah) where kode_barang='$kode_barang'");
-								?>
-								
+  								</select>
+  								<div class="tampung"></div>
+  							</div>
+  						</div>
 
 
-									
-									
-									<script type="text/javascript">
-										alert("Simpan Data Berhasil");
-										window.location.href="?page=barangkeluar";
-										
-										</script>
-										<?php
-								}
+  						<label for="jumlah">Jumlah Transaksi</label>
+  						<div class="form-group">
+  							<div class="form-line">
+  								<input type="number" name="jumlah" class="form-control" id="jumlah" onkeyup="sum()" placeholder="Masukkan Jumlah Transaksi" />
+  								<div id="valid-jumlah" class="invalid-feedback">
+  									Jumlah Barang yang Dibeli Tidak Sesuai dengan Jumlah Barang Tersedia!
+  								</div>
+  							</div>
+  						</div>
+
+  						<label for="jumlah_stok">Sisa Stok</label>
+  						<div class="form-group">
+  							<div class="form-line">
+  								<input readonly="readonly" name="jumlah_stok" id="jumlah_stok" type="number" class="form-control">
+  							</div>
+  						</div>
+
+  						<div class="tampung1"></div>
+  						<input type="submit" name="simpan" value="Simpan" class="btn btn-primary">
+  					</form>
+  					<?php
+						if (isset($_POST['simpan'])) {
+							$id_barang_keluar = $_POST['id_barang_keluar'];
+							$tgl_pembelian = $_POST['tanggal_transaksi'];
+							$id_barang = $_POST['barang'];
+							$jumlah = $_POST['jumlah'];
+							$satuan = $_POST['satuan'];
+
+							$brg = $koneksi->query("SELECT jumlah FROM gudang WHERE id_barang='$id_barang'")->fetch_assoc();
+							if (($brg['jumlah'] - $jumlah) < 0) {
+								echo "<script type='text/javascript'>
+										alert('Stok Barang Habis, Transaksi Tidak Dapat Dilakukan!');
+										window.location.href = '?page=barangkeluar&aksi=tambahbarangkeluar';
+									</script>";
+							} else {
+								$sisa = $brg['jumlah'] - $jumlah;
+
+								$sql = $koneksi->query("INSERT INTO barang_keluar (id_barang_keluar, tgl_pembelian, id_barang, jumlah, satuan) VALUES('$id_barang_keluar','$tgl_pembelian','$id_barang','$jumlah','$satuan')");
+
+								$sql2 = $koneksi->query("UPDATE gudang SET jumlah='$sisa' WHERE id_barang='$id_barang'");
+						?>
+  							<script type="text/javascript">
+  								alert("Data Berhasil Tersimpan!");
+  								window.location.href = "?page=barangkeluar";
+  							</script>
+  					<?php
 							}
-							
-							
-							?>
-								
-								
-								
-								
-								
+						}
+						?>
+
+  					<!--script for this page-->
+  					<script>
+  						jQuery(document).ready(function($) {
+  							$('#cmb_barang').change(function() {
+  								var id_barang = $(this).val();
+  								$.ajax({
+  									type: 'POST', // Metode pengiriman data menggunakan POST
+  									url: 'page/barangkeluar/get_barang.php', // File yang akan memproses data
+  									data: 'id_barang=' + id_barang, // Data yang akan dikirim ke file pemroses
+  									success: function(data) { // Jika berhasil
+  										$('.tampung').html(data);
+  									}
+  								});
+  							});
+  						});
+  					</script>
+
+  					<script>
+  						jQuery(document).ready(function($) {
+  							$('#cmb_barang').change(function() {
+  								var id_barang = $(this).val();
+  								$.ajax({
+  									type: 'POST', // Metode pengiriman data menggunakan POST
+  									url: 'page/barangkeluar/get_satuan.php', // File yang akan memproses data
+  									data: 'id_barang=' + id_barang, // Data yang akan dikirim ke file pemroses
+  									success: function(data) { // Jika berhasil
+  										$('.tampung1').html(data);
+  									}
+  								});
+  							});
+  						});
+  					</script>
