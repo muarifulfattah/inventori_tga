@@ -17,25 +17,26 @@ $koneksi = new mysqli("localhost", "root", "", "inventori");
 $bln = $_POST['bln'];
 $thn = $_POST['thn'];
 
-$query = "SELECT a.id_barang_keluar, a.id_barang, a.tgl_pembelian, a.jumlah, a.satuan, b.nama_barang, b.image FROM barang_keluar a, gudang b WHERE a.id_barang=b.id_barang";
+$query = "SELECT a.id, a.tgl_rusak, a.id_barang, a.jumlah, a.satuan, b.nama_barang, b.image, b.harga_satuan FROM barang_rusak a, gudang b WHERE a.id_barang=b.id_barang";
 
 if ($bln !== 'all') {
-	$query = " AND MONTH(a.tgl_pembelian) = '$bln'";
+	$query .= " AND MONTH(a.tgl_rusak) = '$bln'";
 } else {
 	$bln = null;
 }
 if ($thn !== 'all') {
-	$query = " AND YEAR(a.tgl_pembelian) = '$thn'";
+	$query .= " AND YEAR(a.tgl_rusak) = '$thn'";
 } else {
 	$thn = null;
 }
+
 $no = 1;
-$query .= "  ORDER BY a.created_at DESC";
+$query .= " ORDER BY a.created_at DESC";
 $sql = $koneksi->query($query);
 
 if (isset($_POST['submit'])) :
 	header("Content-type: application/vnd-ms-excel");
-	header("Content-Disposition: attachment; filename=Laporan_Barang_Keluar(" . date('d-m-Y') . ").xls");
+	header("Content-Disposition: attachment; filename=Laporan_Barang_Masuk (" . date('d-m-Y') . ").xls");
 
 	echo "<html xmlns:x='urn:schemas-microsoft-com:office:excel'>
 			<head>
@@ -59,27 +60,29 @@ if (isset($_POST['submit'])) :
 
 	<body>
 		<center>
-			<h2>Laporan Barang Keluar <?= ($bln) ? 'Bulan ' . $bulan[$_POST['bln'] - 1] : ''; ?> <?= ($thn) ? 'Tahun ' . $_POST['thn'] : ''; ?></h2>
+			<h2>Laporan Barang Rusak <?= ($bln) ? 'Bulan ' . $bulan[$_POST['bln'] - 1] : ''; ?> <?= ($thn) ? 'Tahun ' . $_POST['thn'] : ''; ?></h2>
 		</center>
 		<table border="1">
 			<tr>
 				<th>No</th>
-				<th>Kode Barang Keluar</th>
-				<th>Tanggal Keluar</th>
+				<th>Id Transaksi</th>
+				<th>Tanggal Rusak</th>
 				<th>Kode Barang</th>
 				<th>Nama Barang</th>
-				<th>Jumlah Keluar</th>
+				<th>Jumlah Rusak</th>
+				<th>Harga Satuan</th>
 				<th>Satuan Barang</th>
 			</tr>
 			<?php
 			while ($data = $sql->fetch_assoc()) : ?>
 				<tr>
 					<td><?= $no++; ?></td>
-					<td><?= $data['id_barang_keluar'] ?></td>
-					<td><?= $data['tgl_pembelian'] ?></td>
+					<td><?= $data['id'] ?></td>
+					<td><?= $data['tgl_rusak'] ?></td>
 					<td><?= $data['id_barang'] ?></td>
 					<td><?= $data['nama_barang'] ?></td>
 					<td><?= $data['jumlah'] ?></td>
+					<td>Rp <?= number_format($data['harga_satuan'], 0, ',', '.') ?></td>
 					<td><?= $data['satuan'] ?></td>
 				</tr>
 			<?php endwhile; ?>
@@ -88,17 +91,19 @@ if (isset($_POST['submit'])) :
 <?php endif; ?>
 
 <!-- FUNGSI MENAMPILKAN DATA SESUAI BULAN DAN TAHUN -->
+
 <div class="table-responsive">
 	<table class="display table table-bordered" id="transaksi">
 		<thead>
 			<tr>
 				<th>No</th>
 				<th>Gambar</th>
-				<th>Kode Barang Keluar</th>
-				<th>Tanggal Keluar</th>
+				<th>Id Transaksi</th>
+				<th>Tanggal Rusak</th>
 				<th>Kode Barang</th>
 				<th>Nama Barang</th>
-				<th>Jumlah Keluar</th>
+				<th>Jumlah Rusak</th>
+				<th>Harga Satuan</th>
 				<th>Satuan Barang</th>
 			</tr>
 		</thead>
@@ -108,11 +113,12 @@ if (isset($_POST['submit'])) :
 				<tr>
 					<td><?= $no++; ?></td>
 					<td><img src="img/<?= $data['image'] ?>" alt="Gambar Barang" width="75" height="75"></td>
-					<td><?= $data['id_barang_keluar'] ?></td>
-					<td><?= $data['tgl_pembelian'] ?></td>
+					<td><?= $data['id'] ?></td>
+					<td><?= $data['tgl_rusak'] ?></td>
 					<td><?= $data['id_barang'] ?></td>
 					<td><?= $data['nama_barang'] ?></td>
 					<td><?= $data['jumlah'] ?></td>
+					<td>Rp <?= number_format($data['harga_satuan'], 0, ',', '.') ?></td>
 					<td><?= $data['satuan'] ?></td>
 				</tr>
 			<?php endwhile; ?>

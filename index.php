@@ -42,6 +42,8 @@ $page = $_GET['page'];
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
+  <!-- <script src="vendor/chart.js/Chart.min.js"></script> -->
 
 </head>
 
@@ -51,7 +53,7 @@ $page = $_GET['page'];
   <div id="wrapper">
 
     <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <ul class="navbar-nav bg-gradient-secondary sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index3.php">
@@ -65,12 +67,9 @@ $page = $_GET['page'];
       <hr class="sidebar-divider my-0">
 
       <!--sidebar start-->
-
       <li class="d-flex align-items-center justify-content-center">
         <a class="nav-link">
           <img src="img/<?= $data['foto'] ?>" class="img-circle" width="80" alt="User" /></a>
-      <li class="d-flex align-items-center justify-content-left">
-      </li>
       </li>
       <li class="nav-item ">
         <a class="nav-link">
@@ -93,7 +92,7 @@ $page = $_GET['page'];
 
       <!-- Heading -->
       <div class="sidebar-heading">
-        Pilih Menu
+        Menu Utama
       </div>
 
       <!-- Nav Item - Pages Collapse Menu -->
@@ -101,7 +100,7 @@ $page = $_GET['page'];
       <?php if (in_array($level, ['admin'])) : ?>
         <li class="nav-item <?= ($page == 'pengguna') ? 'active' : ''; ?>">
           <a class="nav-link" href="?page=pengguna">
-            <i class="fas fa-fw fa-home"></i>
+            <i class="fas fa-fw fa-user"></i>
             <span>Data Pengguna</span></a>
         </li>
       <?php endif; ?>
@@ -389,9 +388,6 @@ $page = $_GET['page'];
                 }
               }
 
-
-
-
               if ($page == "") {
                 include "home.php";
               }
@@ -408,7 +404,7 @@ $page = $_GET['page'];
         <footer class="sticky-footer bg-white">
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
-              <span>Copyright &copy; 2023. Sistem Informasi Inventaris Barang</span>
+              <span>Copyright &copy; 2023. Sistem Informasi Inventaris Barang | Muariful Fattah</span>
             </div>
           </div>
         </footer>
@@ -425,8 +421,6 @@ $page = $_GET['page'];
   <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
   </a>
-
-  <!-- Logout Modal-->
 
   <!-- Bootstrap core JavaScript-->
   <!-- <script src="vendor/jquery/jquery.min.js"></script> -->
@@ -445,49 +439,10 @@ $page = $_GET['page'];
   <!-- Page level custom scripts -->
   <script src="js/demo/datatables-demo.js"></script>
 
+  <!-- Chart -->
+  <!-- <script src="js/demo/chart-area-demo.js"></script> -->
+  <script src="js/demo/chart-pie-demo.js"></script>
 
-  <script type="text/javascript">
-    jQuery(document).ready(function($) {
-      $(function() {
-        $('#Myform1').submit(function() {
-          $.ajax({
-            type: 'POST',
-            url: 'page/laporan/export_laporan_barangmasuk_excel.php',
-            data: $(this).serialize(),
-            success: function(data) {
-              $(".tampung1").html(data);
-              $('.table').DataTable();
-            }
-          });
-
-          return false;
-          e.preventDefault();
-        });
-      });
-    });
-  </script>
-
-  <script type="text/javascript">
-    jQuery(document).ready(function($) {
-      $(function() {
-        $('#Myform2').submit(function() {
-          $.ajax({
-            type: 'POST',
-            url: 'page/laporan/export_laporan_barangkeluar_excel.php',
-            data: $(this).serialize(),
-            success: function(data) {
-              $(".tampung2").html(data);
-              $('.table').DataTable();
-
-            }
-          });
-
-          return false;
-          e.preventDefault();
-        });
-      });
-    });
-  </script>
 
   <script>
     $(document).ready(function() {

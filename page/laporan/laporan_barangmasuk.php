@@ -49,6 +49,7 @@ $bulan = $bulan = array(
                   <?php
                   $now = date('Y');
                   echo "<select name='thn' class='form-control'>";
+                  echo "<option value='all' selected=''>ALL</option>";
                   for ($a = $tahun; $a <= $now; $a++) {
                     echo "<option value='$a'>$a</option>";
                   }
@@ -68,7 +69,7 @@ $bulan = $bulan = array(
         </tr>
         <tr>
           <td>
-            <form id="Myform1">
+            <form id="FormBrgMasuk">
               <div class="row form-group">
                 <div class="col-md-5">
                   <select class="form-control " name="bln">
@@ -82,6 +83,7 @@ $bulan = $bulan = array(
                   <?php
                   $now = date('Y');
                   echo "<select name='thn' class='form-control'>";
+                  echo "<option value='all' selected=''>ALL</option>";
                   for ($a = $tahun; $a <= $now; $a++) {
                     echo "<option value='$a'>$a</option>";
                   }
@@ -102,6 +104,7 @@ $bulan = $bulan = array(
             <thead>
               <tr>
                 <th>No</th>
+                <th>Gambar</th>
                 <th>Kode Barang Masuk</th>
                 <th>Tanggal Masuk</th>
                 <th>Kode Barang</th>
@@ -114,11 +117,12 @@ $bulan = $bulan = array(
             <tbody>
               <?php
               $no = 1;
-              $sql = $koneksi->query("SELECT a.id, a.id_barang, a.id_supplier, a.tanggal, a.jumlah, a.satuan, b.nama_barang, c.nama_supplier FROM barang_masuk a, gudang b, tb_supplier c WHERE a.id_barang=b.id_barang AND a.id_supplier=c.id_supplier");
+              $sql = $koneksi->query("SELECT a.id, a.id_barang, a.id_supplier, a.tanggal, a.jumlah, a.satuan, b.nama_barang, b.image, c.nama_supplier FROM barang_masuk a, gudang b, tb_supplier c WHERE a.id_barang=b.id_barang AND a.id_supplier=c.id_supplier");
               while ($data = $sql->fetch_assoc()) :
               ?>
                 <tr>
                   <td><?= $no++; ?></td>
+                  <td><img src="img/<?= $data['image'] ?>" alt="Gambar Barang" width="75" height="75"></td>
                   <td><?= $data['id'] ?></td>
                   <td><?= $data['tanggal'] ?></td>
                   <td><?= $data['id_barang'] ?></td>
@@ -134,3 +138,25 @@ $bulan = $bulan = array(
       </div>
     </div>
   </div>
+
+
+  <script type="text/javascript">
+    jQuery(document).ready(function($) {
+      $(function() {
+        $('#FormBrgMasuk').submit(function() {
+          $.ajax({
+            type: 'POST',
+            url: 'page/laporan/export_laporan_barangmasuk_excel.php',
+            data: $(this).serialize(),
+            success: function(data) {
+              $(".tampung1").html(data);
+              $('.table').DataTable();
+            }
+          });
+
+          return false;
+          e.preventDefault();
+        });
+      });
+    });
+  </script>

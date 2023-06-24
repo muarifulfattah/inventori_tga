@@ -21,6 +21,7 @@
                             <th>Kode Barang</th>
                             <th>Nama Barang</th>
                             <th>Jumlah Rusak</th>
+                            <th>Harga Satuan</th>
                             <th>Satuan Barang</th>
                             <th>Pengaturan</th>
 
@@ -29,7 +30,7 @@
                     <tbody>
                         <?php
                         $no = 1;
-                        $sql = $koneksi->query("SELECT a.id, a.tgl_rusak, a.id_barang, b.nama_barang, a.jumlah, a.satuan, b.image FROM barang_rusak a, gudang b WHERE a.id_barang=b.id_barang ORDER BY a.created_at DESC");
+                        $sql = $koneksi->query("SELECT a.id, a.tgl_rusak, a.id_barang, b.nama_barang, a.jumlah, a.satuan, b.image, b.harga_satuan FROM barang_rusak a, gudang b WHERE a.id_barang=b.id_barang ORDER BY a.created_at DESC");
                         while ($data = $sql->fetch_assoc()) {
                         ?>
                             <tr>
@@ -40,6 +41,7 @@
                                 <td><?= $data['id_barang'] ?></td>
                                 <td><?= $data['nama_barang'] ?></td>
                                 <td><?= $data['jumlah'] ?></td>
+                                <td>Rp <?= number_format($data['harga_satuan'], 0, ',', '.') ?></td>
                                 <td><?= $data['satuan'] ?></td>
                                 <td>
 

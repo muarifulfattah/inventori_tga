@@ -21,6 +21,7 @@
 							<th>Kode Barang</th>
 							<th>Nama Barang</th>
 							<th>Jumlah Keluar</th>
+							<th>Harga Satuan</th>
 							<th>Satuan</th>
 							<th>Pengaturan</th>
 						</tr>
@@ -29,7 +30,7 @@
 						<?php
 
 						$no = 1;
-						$sql = $koneksi->query("SELECT a.id_barang_keluar, a.tgl_pembelian, a.id_barang, a.jumlah, a.satuan, b.nama_barang, b.image FROM barang_keluar a, gudang b WHERE a.id_barang=b.id_barang ORDER BY a.tgl_pembelian DESC");
+						$sql = $koneksi->query("SELECT a.id_barang_keluar, a.tgl_pembelian, a.id_barang, a.jumlah, a.satuan, b.nama_barang, b.image, b.harga_satuan FROM barang_keluar a, gudang b WHERE a.id_barang=b.id_barang ORDER BY a.tgl_pembelian DESC");
 						while ($data = $sql->fetch_assoc()) {
 						?>
 							<tr>
@@ -40,6 +41,7 @@
 								<td><?= $data['id_barang'] ?></td>
 								<td><?= $data['nama_barang'] ?></td>
 								<td><?= $data['jumlah'] ?></td>
+								<td>Rp <?= number_format($data['harga_satuan'], 0, ',', '.') ?></td>
 								<td><?= $data['satuan'] ?></td>
 								<td>
 									<a onclick="return confirm('Apakah anda yakin akan menghapus data ini?')" href="?page=barangkeluar&aksi=hapusbarangkeluar&id_barang_keluar=<?= $data['id_barang_keluar'] ?>" class="btn btn-danger">Hapus</a>

@@ -1,3 +1,23 @@
+<?php
+$gdg = $koneksi->query('SELECT * FROM barang_keluar ORDER BY tgl_pembelian limit 1');
+$gdg = $gdg->fetch_assoc();
+$tahun = date('Y', strtotime($gdg['tgl_pembelian']));
+$bulan = $bulan = array(
+  'Januari',
+  'Februari',
+  'Maret',
+  'April',
+  'Mei',
+  'Juni',
+  'Juli',
+  'Agustus',
+  'September',
+  'Oktober',
+  'November',
+  'Desember'
+);
+?>
+
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
@@ -10,36 +30,27 @@
       <table>
         <tr>
           <td>
-            LAPORAN PERBULAN DAN PERTAHUN
+            Export Data Barang Keluar
           </td>
         </tr>
         <tr>
           <td width="50%">
             <form action="page/laporan/export_laporan_barangkeluar_excel.php" method="post">
               <div class="row form-group">
-
                 <div class="col-md-5">
                   <select class="form-control " name="bln">
                     <option value="all" selected="">ALL</option>
-                    <option value="1">January</option>
-                    <option value="2">February</option>
-                    <option value="3">March</option>
-                    <option value="4">April</option>
-                    <option value="5">May</option>
-                    <option value="6">June</option>
-                    <option value="7">July</option>
-                    <option value="8">August</option>
-                    <option value="9">September</option>
-                    <option value="10">October</option>
-                    <option value="11">November</option>
-                    <option value="12">December</option>
+                    <?php foreach ($bulan as $index => $value) : ?>
+                      <option value="<?= $index + 1; ?>"><?= $value; ?></option>
+                    <?php endforeach; ?>
                   </select>
                 </div>
                 <div class="col-md-3">
                   <?php
                   $now = date('Y');
                   echo "<select name='thn' class='form-control'>";
-                  for ($a = 2018; $a <= $now; $a++) {
+                  echo "<option value='all' selected=''>ALL</option>";
+                  for ($a = $tahun; $a <= $now; $a++) {
                     echo "<option value='$a'>$a</option>";
                   }
                   echo "</select>";
@@ -49,43 +60,41 @@
                 <input type="submit" class="" name="submit" value="Export to Excel">
               </div>
             </form>
-
-
-            <form id="Myform2" method="POST" action="">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Tampilkan Barang Keluar Sesuai Dengan Tanggal
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <form id="FormBrgKeluar" method="POST" action="">
               <div class="row form-group">
                 <div class="col-md-5">
                   <select class="form-control " name="bln">
                     <option value="all" selected="">ALL</option>
-                    <option value="1">January</option>
-                    <option value="2">February</option>
-                    <option value="3">March</option>
-                    <option value="4">April</option>
-                    <option value="5">May</option>
-                    <option value="6">June</option>
-                    <option value="7">July</option>
-                    <option value="8">August</option>
-                    <option value="9">September</option>
-                    <option value="10">October</option>
-                    <option value="11">November</option>
-                    <option value="12">December</option>
+                    <?php foreach ($bulan as $index => $value) : ?>
+                      <option value="<?= $index + 1; ?>"><?= $value; ?></option>
+                    <?php endforeach; ?>
                   </select>
                 </div>
                 <div class="col-md-3">
                   <?php
                   $now = date('Y');
                   echo "<select name='thn' class='form-control'>";
-                  for ($a = 2018; $a <= $now; $a++) {
+                  echo "<option value='all' selected=''>ALL</option>";
+                  for ($a = $tahun; $a <= $now; $a++) {
                     echo "<option value='$a'>$a</option>";
                   }
                   echo "</select>";
                   ?>
                 </div>
-                <input type="submit" class="" name="submit" value="Tampilkan">
+                <input type="submit" class="" name="submit2" value="Tampilkan">
               </div>
             </form>
           </td>
-
-
+        </tr>
       </table>
 
       <div class="tampung2">
@@ -95,28 +104,18 @@
               <tr>
                 <th>No</th>
                 <th>Gambar</th>
-                <th>Id Transaksi</th>
+                <th>Kode Barang Keluar</th>
                 <th>Tanggal Keluar</th>
                 <th>Kode Barang</th>
                 <th>Nama Barang</th>
                 <th>Jumlah Keluar</th>
+                <th>Satuan Barang</th>
               </tr>
             </thead>
             <tbody>
               <?php
               $no = 1;
-              if (isset($_GET['submit2'])) {
-                $bln = $_GET['bln'];
-                $thn = $_GET['thn'];
-
-                if ($bln == 'all') {
-                  $sql = $koneksi->query("SELECT a.id_barang_keluar, a.tgl_pembelian, a.id_barang, a.jumlah, a.satuan, b.nama_barang, b.image FROM barang_keluar a, gudang b WHERE a.id_barang=b.id_barang AND (YEAR(a.tgl_pembelian) = '$thn') ORDER BY a.created_at DESC");
-                } else {
-                  $sql = $koneksi->query("SELECT a.id_barang_keluar, a.tgl_pembelian, a.id_barang, a.jumlah, a.satuan, b.nama_barang, b.image FROM barang_keluar a, gudang b WHERE a.id_barang=b.id_barang AND (YEAR(a.tgl_pembelian) = '$thn' OR MONTH(a.tgl_pembelian) = '$bln') ORDER BY a.created_at DESC");
-                }
-              } else {
-                $sql = $koneksi->query("SELECT a.id_barang_keluar, a.tgl_pembelian, a.id_barang, a.jumlah, a.satuan, b.nama_barang, b.image FROM barang_keluar a, gudang b WHERE a.id_barang=b.id_barang ORDER BY a.created_at DESC");
-              }
+              $sql = $koneksi->query("SELECT a.id_barang_keluar, a.tgl_pembelian, a.id_barang, a.jumlah, a.satuan, b.nama_barang, b.image FROM barang_keluar a, gudang b WHERE a.id_barang=b.id_barang ORDER BY a.created_at DESC");
               while ($data = $sql->fetch_assoc()) {
               ?>
                 <tr>
@@ -127,6 +126,7 @@
                   <td><?= $data['id_barang'] ?></td>
                   <td><?= $data['nama_barang'] ?></td>
                   <td><?= $data['jumlah'] ?></td>
+                  <td><?= $data['satuan'] ?></td>
                 </tr>
               <?php } ?>
 
@@ -136,3 +136,26 @@
       </div>
     </div>
   </div>
+
+
+  <script type="text/javascript">
+    jQuery(document).ready(function($) {
+      $(function() {
+        $('#FormBrgKeluar').submit(function() {
+          $.ajax({
+            type: 'POST',
+            url: 'page/laporan/export_laporan_barangkeluar_excel.php',
+            data: $(this).serialize(),
+            success: function(data) {
+              $(".tampung2").html(data);
+              $('.table').DataTable();
+
+            }
+          });
+
+          return false;
+          e.preventDefault();
+        });
+      });
+    });
+  </script>
