@@ -18,21 +18,26 @@
   						<input type="submit" name="simpan" value="Simpan" class="btn btn-primary">
   					</form>
   					<?php
-						if (isset($_POST['simpan'])) {
+						if (isset($_POST['simpan'])) :
 							$jenis_barang = $_POST['jenis_barang'];
-							$sql = $koneksi->query("INSERT INTO jenis_barang (jenis_barang) VALUES('$jenis_barang')");
-
-							if ($sql) :
-						?>
-
+							$cek = $koneksi->query("SELECT * FROM jenis_barang WHERE jenis_barang='$jenis_barang'");
+							if (mysqli_num_rows($cek) > 0) : ?>
   							<script type="text/javascript">
-  								alert("Data Berhasil Disimpan");
+  								alert("Data Telah Ada!");
   								window.location.href = "?page=jenisbarang";
   							</script>
+  							<?php
+							else :
+								$sql = $koneksi->query("INSERT INTO jenis_barang (jenis_barang) VALUES('$jenis_barang')");
 
-  					<?php
+								if ($sql) :
+								?>
+
+  								<script type="text/javascript">
+  									alert("Data Berhasil Disimpan");
+  									window.location.href = "?page=jenisbarang";
+  								</script>
+
+  					<?php endif;
 							endif;
-						}
-
-
-						?>
+						endif; ?>

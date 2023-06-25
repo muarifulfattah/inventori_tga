@@ -27,7 +27,7 @@ $user = $_SESSION['data'];
           <tbody>
             <?php
             $no = 1;
-            $sql = $koneksi->query("select * from jenis_barang");
+            $sql = $koneksi->query("SELECT * FROM jenis_barang ORDER BY id DESC");
             while ($data = $sql->fetch_assoc()) {
             ?>
               <tr>
@@ -35,7 +35,7 @@ $user = $_SESSION['data'];
                 <td><?= $data['jenis_barang'] ?></td>
                 <td>
                   <a href="?page=jenisbarang&aksi=ubahjenis&id=<?= $data['id'] ?>" class="btn btn-success">Ubah</a>
-                  <?php if ($user['level'] == 'superadmin') : ?>
+                  <?php if ($level == 'admin') : ?>
                     <a onclick="return confirm('Apakah anda yakin akan menghapus data ini?')" href="?page=jenisbarang&aksi=hapusjenis&id=<?= $data['id'] ?>" class="btn btn-danger">Hapus</a>
                   <?php endif; ?>
                 </td>

@@ -19,62 +19,62 @@ $bulan = array(
 // Contoh data stok barang
 $data = $koneksi->query("SELECT a.id_barang, b.nama_barang, MONTH(a.tgl_pembelian) as bulan, a.jumlah, SUM(a.jumlah*b.harga_satuan) as jumlah_penjualan FROM barang_keluar a, gudang b WHERE a.id_barang=b.id_barang AND a.tgl_pembelian >= DATE_SUB(CURDATE(), INTERVAL 300 DAY) GROUP BY a.id_barang");
 
-$barang = array();
-foreach ($data as $index => $row) {
-  $barang[$index][0] = $row['nama_barang'];
-  $barang[$index][1] = $row['jumlah_penjualan'];
-}
+// $barang = array();
+// foreach ($data as $index => $row) {
+//   $barang[$index][0] = $row['nama_barang'];
+//   $barang[$index][1] = $row['jumlah_penjualan'];
+// }
 
 
-// Konfigurasi k-means
-$k = 5; // Jumlah kelompok yang diinginkan
-$maxIter = 1000; // Jumlah iterasi maksimum
-$epsilon = 0.001; // Toleransi perubahan centroid
+// // Konfigurasi k-means
+// $k = 5; // Jumlah kelompok yang diinginkan
+// $maxIter = 1000; // Jumlah iterasi maksimum
+// $epsilon = 0.001; // Toleransi perubahan centroid
 
-// Inisialisasi centroid secara acak
-$centroids = array();
-for ($i = 0; $i < $k; $i++) {
-  $centroids[] = rand(0, 100);
-}
+// // Inisialisasi centroid secara acak
+// $centroids = array();
+// for ($i = 0; $i < $k; $i++) {
+//   $centroids[] = rand(0, 100);
+// }
 
-// Pemrosesan k-means
-for ($iter = 0; $iter < $maxIter; $iter++) {
-  // Mengelompokkan data ke centroid terdekat
-  $clusters = array();
-  for ($i = 0; $i < count($barang); $i++) {
-    $distances = array();
-    for ($j = 0; $j < $k; $j++) {
-      $distance = abs($barang[$i][1] - $centroids[$j]);
-      $distances[] = $distance;
-    }
-    $clusterIndex = array_search(min($distances), $distances);
-    $clusters[$clusterIndex][] = $barang[$i];
-  }
+// // Pemrosesan k-means
+// for ($iter = 0; $iter < $maxIter; $iter++) {
+//   // Mengelompokkan data ke centroid terdekat
+//   $clusters = array();
+//   for ($i = 0; $i < count($barang); $i++) {
+//     $distances = array();
+//     for ($j = 0; $j < $k; $j++) {
+//       $distance = abs($barang[$i][1] - $centroids[$j]);
+//       $distances[] = $distance;
+//     }
+//     $clusterIndex = array_search(min($distances), $distances);
+//     $clusters[$clusterIndex][] = $barang[$i];
+//   }
 
-  // Menghitung centroid baru
-  $newCentroids = array();
-  foreach ($clusters as $cluster) {
-    $total = 0;
-    foreach ($cluster as $item) {
-      $total += $item[1];
-    }
-    $count = count($cluster);
-    $newCentroids[] = ($count > 0) ? ($total / $count) : 0;
-  }
+//   // Menghitung centroid baru
+//   $newCentroids = array();
+//   foreach ($clusters as $cluster) {
+//     $total = 0;
+//     foreach ($cluster as $item) {
+//       $total += $item[1];
+//     }
+//     $count = count($cluster);
+//     $newCentroids[] = ($count > 0) ? ($total / $count) : 0;
+//   }
 
-  // Menghentikan iterasi jika centroid tidak berubah signifikan
-  $centroidDiff = array_map(function ($a, $b) {
-    return abs($a - $b);
-  }, $centroids, $newCentroids);
-  if (max($centroidDiff) < $epsilon) {
-    break;
-  }
+//   // Menghentikan iterasi jika centroid tidak berubah signifikan
+//   $centroidDiff = array_map(function ($a, $b) {
+//     return abs($a - $b);
+//   }, $centroids, $newCentroids);
+//   if (max($centroidDiff) < $epsilon) {
+//     break;
+//   }
 
-  $centroids = $newCentroids;
-}
+//   $centroids = $newCentroids;
+// }
 
-// Mengambil barang yang harus ditingkatkan stok
-$recommendedItems = $clusters[array_search(max($centroids), $centroids)];
+// // Mengambil barang yang harus ditingkatkan stok
+// $recommendedItems = $clusters[array_search(max($centroids), $centroids)];
 
 // Menampilkan rekomendasi barang
 // echo "Rekomendasi Barang yang Harus Ditingkatkan Stok:<br>";

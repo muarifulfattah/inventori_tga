@@ -41,7 +41,7 @@ $format = "BAR-" . $bulan . $tahun .  sprintf('%04d', $tambah);
 						<label for="">Jenis Barang</label>
 						<div class="form-group">
 							<div class="form-line">
-								<select name="id_jenis_barang" class="form-control" required />
+								<select name="id_jenis_barang" class="form-control select2-on" required />
 								<?php
 								$sql = $koneksi->query("SELECT * FROM jenis_barang ORDER BY id");
 								while ($data = $sql->fetch_assoc()) {
@@ -62,7 +62,7 @@ $format = "BAR-" . $bulan . $tahun .  sprintf('%04d', $tambah);
 						<label for="">Satuan Barang</label>
 						<div class="form-group">
 							<div class="form-line">
-								<select name="satuan" class="form-control" required />
+								<select name="satuan" class="form-control select2-on" required />
 								<?php
 								$sql = $koneksi->query("select * from satuan order by id");
 								while ($data = $sql->fetch_assoc()) {
